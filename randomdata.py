@@ -10,7 +10,11 @@ customerInfo = Customer(
     ["00000 000", "3036 Village Green Blvd"],
 )
 loyaltyInfoList = LoyatlyInfoList(
-    [LoyaltyInfo("20203155494430", "7120122794565", "", "3910", "0", "0", "0")]
+    [
+        LoyaltyInfo(
+            "20203155494430", "7120122794565", "2021-02-11", "3910", "0", "0", "0"
+        )
+    ]
 )
 loyaltyOfferMadeToCustomerList = LoyaltyOfferMadeToCustomerList(
     [
@@ -33,10 +37,10 @@ loyaltyOfferMadeToCustomerList = LoyaltyOfferMadeToCustomerList(
     ]
 )
 
-inferenceAboutYou = InferenceAboutYou(["InstantGratification"])
-salesTransactionSummary = SalesTransactionSummary(299.67, 24.56)
+inferenceAboutYou = InferenceAboutYou(listOfPreferences=["Instant Gratification"])
+salesTransactionSummary = SalesTransactionSummary("$299.67", "$24.56")
 
-summaryReport = SummaryReport(
+summaryReportData = SummaryReport(
     request,
     customerInfo,
     loyaltyInfoList,
@@ -45,4 +49,16 @@ summaryReport = SummaryReport(
     emailSubscription=None,
     inferenceAboutYou=inferenceAboutYou,
     salesTransactionSummary=salesTransactionSummary,
+)
+
+detailReportData = DetailReport(
+    request,
+    InstorePurchaseList(
+        [InstorePurchase("2020-12-05", "N/B GNKO BLBA 100S", "2", "18.99", "0")]
+    ),
+    None,
+    None,
+    PaymentDetailList(
+        [PaymentDetail("2021-03-02", "Credit Card", "10.98", "6278", "In Stores")]
+    ),
 )

@@ -6,9 +6,12 @@ from dataclasses import dataclass
 class InstorePurchase:
     purchaseDate: str
     productDescription: str
-    totalQuantity: int
+    totalQuantity: str
     totalSales: float
-    returnQuatity: int
+    returnQuatity: str
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 @dataclass
@@ -16,15 +19,21 @@ class OnlinePurchase:
     purhcaseDate: str
     productDescription: str
     totalSales: float
-    unitQuantity: int
+    unitQuantity: str
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 @dataclass
 class OnlineReturn:
     productDescription: str
     totalReturnDlr: str
-    qnantityToReturn: int
+    qnantityToReturn: str
     returnReportedDate: str
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 @dataclass
@@ -33,8 +42,11 @@ class PaymentDetail:
     purchaseDate: str
     paymentType: str
     tenderedAmount: float
-    cardLastFourDigits: int
+    cardLastFourDigits: str
     purchaseType: str
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 # class specific to summary
@@ -44,6 +56,11 @@ class PaymentDetail:
 class SalesTransactionSummary:
     totalAmountSpend: float
     totalTaxPaid: float
+    __sectionName__ = "Sales Transaction Summary"
+    __dataHeaders__ = {
+        "Total amount spent in last 12 months": "totalAmountSpend",
+        "Total tax paid in last 12 months": "totalTaxPaid",
+    }
 
 
 @dataclass
@@ -54,9 +71,9 @@ class InferenceAboutYou:
     homeOwnerList: list[str] = None
     householdEduList: list[str] = None
     householdMartialStatusList: list[str] = None
-    householdSize: int = None
+    householdSize: str = None
     householdLanguageCode: str = None
-    noOfChildrenInHousehold: int = None
+    noOfChildrenInHousehold: str = None
     occupationList: list[str] = None
     targetIncomeList: list[str] = None
     childrenAgeZeroToTwoList: list[str] = None
@@ -64,6 +81,9 @@ class InferenceAboutYou:
     childrenAgesixToTenList: list[str] = None
     childrenAgeElevenToFiftenList: list[str] = None
     childrenAgeSixteenToSeventeenList: list[str] = None
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 @dataclass
@@ -77,12 +97,27 @@ class PSCInfo:
     pscCardId: str
     name: str
     email: str
-    postalAddresS: str
+    postalAddress: str
     telephoneNumber: str
     dateOfBirth: str
     createDate: str
     endDate: str
     memberShipCategory: str
+    __sectionName__ = "PSC Information"
+    __dataHeaders__ = {
+        "Loyalty Member Id": "psdMembershipId",
+        "Loyalty Card Number": "pscCardId",
+        "Enrollment Date": "name",
+        "Enrollment Channel": "email",
+        "Current Point Balance": "postalAddress",
+        "Lifetime Points Earned": "telephoneNumber",
+        "Lifetime Points Redemmed": "dateOfBirth",
+        "Lifetime Points Redemmed": "createDate",
+        "Lifetime Points Redemmed": "endDate"
+    }
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 @dataclass
@@ -95,16 +130,48 @@ class LoyaltyOfferMadeToCustomer:
     dateOptOut: str
 
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+@dataclass
+class LoyaltyOfferMadeToCustomerList:
+    entries : list[LoyaltyOfferMadeToCustomer]
+    __sectionName__ = "Loyalty Offers Made To Customer"
+    __dataHeaders__ = {
+        "Loyalty Member Id": "loyaltyMemberId",
+        "Loyalty Offer": "loyaltyOffer",
+        "Offer Opt In Date": "offerOptInDate",
+        "Offer Opt Out Date": "offerOptOutDate",
+        "Date Opt In": "dateOptIn",
+        "Date Opt Out": "dateOptOut"
+    }
+
 @dataclass
 class LoyaltyInfo:
     loyaltyMemberId: str
     loyaltyCardNumber: str
     enrollmentDate: str
     enrollmentChannel: str
-    currentPointBalance: int
-    lifetimePointsEarnerd: int
-    lifeTimePointsRedemmed: int
+    currentPointBalance: str
+    lifetimePointsEarnerd: str
+    lifeTimePointsRedemmed: str
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+@dataclass
+class LoyatlyInfoList:
+    entries : list[LoyaltyInfo]
+    __sectionName__ = "Loyalty Information"
+    __dataHeaders__ = {
+        "Loyalty Member Id": "loyaltyMemberId",
+        "Loyalty Card Number": "loyaltyCardNumber",
+        "Enrollment Date": "enrollmentDate",
+        "Enrollment Channel": "enrollmentChannel",
+        "Current Point Balance": "currentPointBalance",
+        "Lifetime Points Earned": "lifetimePointsEarnerd",
+        "Lifetime Points Redemmed": "lifeTimePointsRedemmed",
+    }
 
 @dataclass
 class Customer:
@@ -114,9 +181,18 @@ class Customer:
     emailAddresses: list[str]
     contacts: list[str]
     postalAddresses: list[str]
+    __sectionName__ ="Customer Information"
+    __keyList__ = {
+        "Name": "name",
+        "Birth Date": "birthDate",
+        "Gender": "gender",
+        "Email Addresses": "emailAddresses",
+        "Contact": "contacts",
+        "Postal Address": "postalAddresses",
+    }
 
     def __getitem__(self, item):
-       return getattr(self, item)
+        return getattr(self, item)
 
 
 # class common to both
@@ -128,6 +204,7 @@ class Request:
     requesterName: str
     reportDate: str
 
+
 @dataclass
 class DetailReport:
     request: Request
@@ -136,13 +213,20 @@ class DetailReport:
     onlineReturns: list[OnlineReturn] = None
     paymentDetails: list[PaymentDetail] = None
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
 @dataclass
 class SummaryReport:
     request: Request
     customer: Customer
-    loyatlyInformations: list[LoyaltyInfo] = None
-    loyaltyOfferMadeToCustomer: list[LoyaltyOfferMadeToCustomer] = None
-    pSCInfo:PSCInfo = None
+    loyatlyInformations: LoyatlyInfoList = None
+    loyaltyOfferMadeToCustomer: LoyaltyOfferMadeToCustomerList = None
+    pSCInfo: PSCInfo = None
     emailSubscription: EmailSubscription = None
     inferenceAboutYou: InferenceAboutYou = None
     salesTransactionSummary: SalesTransactionSummary = None
+
+    def __getitem__(self, item):
+        return getattr(self, item)

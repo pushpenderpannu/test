@@ -9,25 +9,28 @@ class PDF(FPDF):
     bullet_character = "\u2022"
     logger = logging.getLogger(__name__)
 
-    def __printTableHeader__(self, headers, widthMap):
+    def __printTableHeader__(
+        self, headers, widthMap, alignmentMap, height_multiplier=2
+    ):
         self.set_font(self.report_font, "B")
         total = sum(widthMap)
         counter = 0
         unit_width = self.epw / total
         for header in headers:
+            width = unit_width * widthMap[counter]
             self.multi_cell(
-                w=unit_width * widthMap[counter],
-                h=self.font_size * 4,
-                max_line_height=self.font_size * 2,
+                w=width,
+                h=self.font_size * height_multiplier * 2,
+                max_line_height=self.font_size * height_multiplier,
                 txt=header,
                 border=1,
                 new_y="TOP",
                 new_x="RIGHT",
                 fill=True,
-                align="L",
+                align=alignmentMap[counter],
             )
             counter = counter + 1
-        self.ln(self.font_size * 4)
+        self.ln(self.font_size * height_multiplier * 2)
 
     def __printTableValue__(self, values, widthMap, alignmentMap):
 
@@ -49,14 +52,14 @@ class PDF(FPDF):
             counter = counter + 1
         self.ln()
 
-    def __printTableSection__(self, sectionName, tableSectionData):
-        self.ln()
+    def __printTableSection__(self, sectionName, tableSectionData, height_multiplier=2):
         if tableSectionData is not None:
+            self.ln(self.font_size)
             if (self.y + self.b_margin + self.report_font_size * 2) > 210:
                 self.add_page()
             headers = tableSectionData.__headingAttributeMap__
             widthMap = list(tableSectionData.__widthMap__.values())
-            
+
             try:
                 alignmentMap = tableSectionData.__alignmentMap__
             except AttributeError:
@@ -77,7 +80,9 @@ class PDF(FPDF):
 
             self.set_font(self.report_font, "BU")
             self.cell(w=self.epw, h=self.font_size * 2, txt=sectionName, ln=1)
-            self.__printTableHeader__(headerKeys, widthMap)
+            self.__printTableHeader__(
+                headerKeys, widthMap, alignmentData, height_multiplier
+            )
             for row in entries:
                 data = []
                 for dataIndex in dataIndexes:
@@ -243,7 +248,6 @@ class DetailReportPDF(ReportPDF):
         super().__init__(detailreport)
         self.detailreport: reportdata.DetailReport = detailreport
 
-
     def __save__(self):
         self.__printEndSection__()
         self.save("DET_DAE_")
@@ -251,22 +255,22 @@ class DetailReportPDF(ReportPDF):
     def __printInstorePurchaes__(self):
         sectionName = "Instore Purcahses"
         tabledSection = self.detailreport.instorePurchases
-        self.__printTableSection__(sectionName, tabledSection)
+        self.__printTableSection__(sectionName, tabledSection, 1)
 
     def __printOnlinePurchase__(self):
         sectionName = "Online Purcahses"
         tabledSection = self.detailreport.onlinePurcahses
-        self.__printTableSection__(sectionName, tabledSection)
+        self.__printTableSection__(sectionName, tabledSection, 1)
 
     def __printOnlineReturns__(self):
         sectionName = "Online Returns"
         tabledSection = self.detailreport.onlineReturns
-        self.__printTableSection__(sectionName, tabledSection)
+        self.__printTableSection__(sectionName, tabledSection, 1)
 
     def __printPaymentDetails__(self):
         sectionName = "Payment Details"
         tabledSection = self.detailreport.paymentDetails
-        self.__printTableSection__(sectionName, tabledSection)
+        self.__printTableSection__(sectionName, tabledSection, 1)
 
     def printReport(self):
         self.__printInstorePurchaes__()

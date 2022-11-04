@@ -22,11 +22,11 @@ class InstorePurchaseList:
         "Product Description": "productDescription",
         "Total Quantity": "totalQuantity",
         "Total Sales ($)": "totalSales",
-        "Return Quatity": "returnQuatity",
+        "Return Quantity": "returnQuatity",
     }
     __alignmentMap__ = {
-        "Total Quantity ($)": "R",
-        "Total Sales": "R",
+        "Total Quantity": "R",
+        "Total Sales ($)": "R",
         "Return Quantity": "R",
     }
     __widthMap__ = {
@@ -34,7 +34,7 @@ class InstorePurchaseList:
         "Product Description": 2,
         "Total Quantity": 1,
         "Total Sales ($)": 1,
-        "Return Quatity": 1,
+        "Return Quantity": 1,
     }
 
 
